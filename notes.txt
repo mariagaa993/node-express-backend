@@ -29,3 +29,5 @@ npm install standard -D / yarn add standard -D
 - Middelware = Es una función que intercepta la petición que esta pasando por la API.
 
 - CORS (Cross-Origin Resource Sharing) = compartir recursos a tráves de origines distintos.
+
+- Procfile = es donde colocamos el tipo de servicio que se va a deployar.
