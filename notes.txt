@@ -1,0 +1,31 @@
+- También se puede colocar como "import http from 'http"; 
+Se conoce como Javascript modules (import/export).
+
+- htpp para crear un servidor.
+
+- http puerto 80 y https (ssl) es 433 // las páginas que visitamos.
+
+- 3.4.1 (semantic version) significa:
+3 = MAJOR si sube significa que cambia totalmente el contrato (no es compatible).
+4 = MINOR si sube significa que en esa versión se ha cambiado un feature.
+1 = PATCH si sube significa que en esa versión se ha arreglado un bug.
+
+- ^ significa que hasta cierto punto la dependencia se actualizará automáticamente.
+Solo cambia minor y patch. Si tienes un minor 0 solo te actualiza el patch.
+Quitar para tener más control sobre las dependencias.
+
+- Rest Client = para tener las requests en el mismo proyecto.
+
+- Linter = Para evitar tener errores en nuestro código se utilizan herramientas que se llaman
+linters. Estas herramientas detectan y señalan los errores que tiene cualquier 
+lenguaje de programación. También te puede decir sobre "code styles" 
+¿qué estilos de código estás utilizando? Debería instalarse cuando comencemos 
+un nuevo proyecto. El más utilizando y más conocido es ESLint.
+npm install eslint -D / yarn add eslint -D
+./node_modules/.bin/eslint --init (para la configuración inicial).
+Si no quiero preocuparme por la configuración puedo utilizar:
+npm install standard -D / yarn add standard -D
+
+- Middelware = Es una función que intercepta la petición que esta pasando por la API.
+
+- CORS (Cross-Origin Resource Sharing) = compartir recursos a tráves de origines distintos.

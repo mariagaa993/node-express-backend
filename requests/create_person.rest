@@ -1,0 +1,23 @@
+POST http://localhost:3000/api/people
+Content-Type: application/json
+
+{
+    "name": "Carolina"
+}
+
+###
+
+POST http://localhost:3000/api/people
+Content-Type: application/json
+
+{
+    "age": "56 years old"
+}
+
+###
+
+
+POST http://localhost:3000/api/people
+Content-Type: application/json
+
+{}
