@@ -31,3 +31,6 @@ npm install standard -D / yarn add standard -D
 - CORS (Cross-Origin Resource Sharing) = compartir recursos a tráves de origines distintos.
 
 - Procfile = es donde colocamos el tipo de servicio que se va a deployar.
+
+- Si estoy en windows descargar cross-env para que funcione las variables de entorno
+(desarrollo, producción y test)

@@ -1,4 +1,4 @@
-DELETE http://localhost:3000/api/people/2
+DELETE http://localhost:3000/api/people/61554d8b0617f3c10ceba288
 
 ### si quiero hacer otro request en el mismo archivo
 // coloco tres almohadillas para separar

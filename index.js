@@ -1,28 +1,19 @@
+require('dotenv').config() // ver si tenemos el archivo .env y correrlo
+require('./mongo'); // ejecuta todo lo que esta en el archivo sin
+// necesidad de crear una función const connectDB = require('./mongo'); luego connectDB();
 const express = require('express'); // Se conoce como CommondJs
-const cors = require('cors');
-
 const app = express();
+const cors = require('cors');
+const Person = require('./models/Person');
+const notFound = require('./middleware/notFound');
+const handleErrors = require('./middleware/handleErrors');
+
 const logger = require('./loggerMiddelware'); 
 
-app.use(express.json()); // soportar request cuando se pasan objetos - middelware
 app.use(cors()); // Para que cualquier origen funcione en nuestra app
+app.use(express.json()); // soportar request cuando se pasan objetos - middelware
 
 app.use(logger);
-
-let people = [
-    {
-        id: 1,
-        name: 'Andrea'
-    },
-    {
-        id: 2,
-        name: 'Jose'
-    },
-    {
-        id: 3,
-        name: 'Maria'
-    }
-];
 
 /* 
 Hacer las llamas a la api con esto es mucho más complicado, 
@@ -38,48 +29,61 @@ app.get('/', (request, response) => {
     response.send('<h1>La bebé es una gritona</h1>');
 });
 
-app.get('/api/people', (request, response) => {
-    response.status(201).json(people);
+app.get('/api/people', (request, response, next) => {
+    Person.find({})
+    .then(people => response.status(200).json(people)) // people.toJSON();
+    .catch(err => next(err));
 });
 
-app.get('/api/people/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const person = people.find(person => person.id === id);
-    person ? response.status(201).json(person) : response.status(404).end();
+app.get('/api/people/:id', (request, response, next) => {
+    const { id } = request.params; // extraer el id
+    Person.findById(id)
+    .then(person => person ? response.status(200).json(person) : response.status(404).end())
+    .catch(err => next(err)); // se irá al siguiente middleware
 });
 
-app.delete('/api/people/:id', (request, response) => {
-    const id = Number(request.params.id); // params = las keys del objeto
-    people = people.filter(person => person.id !== id); // se guardan todas menos la que encuentra
-    response.status(204).end();
+app.delete('/api/people/:id', (request, response, next) => {
+    const { id } = request.params; // params = las keys del objeto
+    Person.findByIdAndDelete(id)
+    .then(() => response.status(204).end())
+    .catch(err => next(err));
 });
 
-app.post('/api/people', (request, response) => {
+app.post('/api/people', (request, response, next) => {
     const person = request.body; // es requerido las keys name, lastname, age
     // condicional para verificar
     if(!person || !person.name) {
         return response.status(400).json({ // error cuando se crea mal un recurso
             error: 'Some required parameter is missing'
         });
-    }
-    const ids = people.map(person  => person.id);
-    const maxId = Math.max(...ids);
-    const newPerson = {
-        id: maxId + 1,
-        name: person.name,
     };
-    people = [...people, newPerson]; // people = people.concat(newPerson);
-    response.status(201).json(newPerson);
+    const newPerson = new Person({
+        name: person.name
+    });
+
+    // asincrono
+    newPerson.save()
+    .then(savedPerson => response.status(201).json(savedPerson))
+    .catch(err => next(err));
 });
 
-app.use((resquest, response) => {
-    response.status(404).json({
-        error: 'Not found'
-    }); 
+app.put('/api/people/:id', (request, response, next) => {
+    const { id } = request.params;
+    const person = request.body;
+    const personUpdate = {
+        name: person.name
+    };
+    Person.findByIdAndUpdate(id, personUpdate, { new: true })
+    .then(result => response.json(result)) // el resultado es lo que consiguió con el id no el actualizado
+    .catch(err => next(err)); // pero si colocamos el tercer parametro, si lo cambia por el nuevo
 });
 
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
+app.use(notFound);
+app.use(handleErrors);
+
+const PORT = process.env.PORT; // variable de entorno
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
+module.exports = { app, server };
